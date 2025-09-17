@@ -17,22 +17,21 @@ Este projeto utiliza **FastAPI** para criar uma API simples que integra dados re
 
 Clone este repositório e, dentro da pasta do projeto, instale as dependências:
 
-bash
 pip install "fastapi[standard]"
 pip install requests
+
 ▶️ Executando o servidor
 No terminal, dentro da pasta do projeto, rode o comando:
 
-bash
 fastapi dev main.py
+
 🌐 Endpoints principais
 Rotas (URLs) que a API disponibiliza para receber ou enviar informações:
 
 API rodando: http://127.0.0.1:8000/
+A coleção do PostMan possui todos os EndPoints da aplicação.
 
 🛑 Encerrando
 Para parar o servidor: pressione CTRL + C no terminal.
 
-Para sair do ambiente virtual:
-bash
-deactivate
+<h1>Lembrando que o BackEnd do Fiware e o IoT devem estar em funcionamento.</h1>
