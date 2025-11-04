@@ -105,6 +105,12 @@ def long_get() -> dict:
 
 @app.get('/coord/latlong')
 def lat_long_get() -> dict:
+    """
+    Busca e retorna apenas a latitude atual.
+
+    Este endpoint busca a coordenada completa e extrai a segunda parte da string,
+    que corresponde à latitude, para retornar ao cliente.
+    """
     request = requests.get(f'http://{url}:1026/v2/entities/urn:ngsi-ld:Gps:001/attrs/coord', headers={'fiware-service': 'smart', 'fiware-servicepath': '/', 'accept': 'application/json'})
     response = request.json()['value'].split(' ')
     return {'y': response[0], 'x': response[1]}
@@ -136,10 +142,24 @@ perimeter_data = None
 
 @app.get('/coord/database')
 def get_database_perimeter() -> list:
+    """
+    Busca e retorna todos os perímetros salvos no banco de dados.
+
+    Este endpoint lê o arquivo 'database.json' através da função do repositório
+    e retorna a lista completa de perímetros cadastrados. Cada item na lista
+    é um dicionário contendo id, nome e os limites do perímetro.
+    """
     return database_repository.read_matchcoord_database()
 
 @app.get('/coord/define')
 def show_perimeter() -> dict | None:
+    """
+    Exibe o perímetro que está atualmente ativo na memória para cálculos.
+
+    Retorna o dicionário do perímetro que foi selecionado através do endpoint
+    POST '/coord/define'. Se nenhum perímetro tiver sido selecionado ainda,
+    o valor retornado será nulo (None).
+    """
     return perimeter_data
 
 @app.post('/coord/define')
@@ -164,6 +184,14 @@ def lockin_perimeter(obj: ChoosePerimeterDTO) -> dict:
 
 @app.post('/coord/database')
 def create_new_match_perimeter(obj: CreatePerimeterDTO) -> int:
+    """
+    Cria e armazena um novo perímetro no banco de dados.
+
+    Recebe um objeto com nome e os limites de coordenadas (x e y).
+    A função então passa esses dados para o repositório, que gera um ID único,
+    monta o objeto completo e o salva no arquivo 'database.json'.
+    Retorna 1 em caso de sucesso.
+    """
     name = obj.name
     xleft = obj.x.left
     xright = obj.x.right
@@ -173,6 +201,15 @@ def create_new_match_perimeter(obj: CreatePerimeterDTO) -> int:
 
 @app.put('/coord/database')
 def update_new_match_perimeter(obj: UpdatePerimeterDTO) -> int:
+    """
+    Atualiza os dados de um perímetro existente no banco de dados.
+
+    Recebe um objeto contendo o ID do perímetro a ser alterado e os novos
+    valores para os campos que se deseja modificar (nome, x, y). Campos
+    não fornecidos não serão alterados. A função repassa os dados para o
+    repositório, que localiza e atualiza o registro correspondente.
+    Retorna 1 em caso de sucesso ou -1 se o ID não for encontrado.
+    """
     id = obj.id
     name = obj.name
     xleft = obj.x.left if not obj.x == None else None 
@@ -183,6 +220,14 @@ def update_new_match_perimeter(obj: UpdatePerimeterDTO) -> int:
 
 @app.delete('/coord/database')
 def delete_match_perimeter(obj: ChoosePerimeterDTO) -> int:
+    """
+    Exclui um perímetro do banco de dados com base no seu ID.
+
+    Recebe um objeto contendo o ID do perímetro a ser removido.
+    Este ID é passado para a função do repositório, que localiza o registro
+    correspondente no arquivo 'database.json' e o remove.
+    Retorna 1 em caso de sucesso ou -1 se o ID não for encontrado.
+    """
     return database_repository.delete_matchcoord_database(obj.id)
 
 @app.get('/coord/lat/100')
@@ -197,16 +242,16 @@ def lat_100_get() -> dict:
     """
     request = requests.get(f'http://{url}:1026/v2/entities/urn:ngsi-ld:Gps:001/attrs/coord', headers={'fiware-service': 'smart', 'fiware-servicepath': '/', 'accept': 'application/json'})
     response = request.json()['value'].split(' ')[0]
+    try:
+        intervalo_total = float(perimeter_data['y']['up']) - float(perimeter_data['y']['down'])
+        intervalo_parcial = float(response) - float(perimeter_data['y']['down'])
 
-    if perimeter_data['y']['up'] == None or perimeter_data['y']['down'] == None:
-        return {'y': 'Atualize primeiro o perimeter antes de mandar'}
+        resultado = (-100) + ((intervalo_parcial * 200)/intervalo_total)
 
-    intervalo_total = float(perimeter_data['y']['up']) - float(perimeter_data['y']['down'])
-    intervalo_parcial = float(response) - float(perimeter_data['y']['down'])
+        return {'y': resultado}
+    except TypeError:
+        return {'y': 'Atualize primeiro o perimetro antes de mandar a requisição!'}
 
-    resultado = (-100) + ((intervalo_parcial * 200)/intervalo_total)
-
-    return {'y': resultado}
 
 @app.get('/coord/long/100')
 def long_100_get() -> dict:
@@ -219,15 +264,16 @@ def long_100_get() -> dict:
     request = requests.get(f'http://{url}:1026/v2/entities/urn:ngsi-ld:Gps:001/attrs/coord', headers={'fiware-service': 'smart', 'fiware-servicepath': '/', 'accept': 'application/json'})
     response = request.json()['value'].split(' ')[1]
 
-    if perimeter_data['x']['left'] == None or perimeter_data['x']['right'] == None:
-        return {'x': 'Atualize primeiro o perimeter antes de mandar'}
+    try:
+        intervalo_total = float(perimeter_data['x']['left']) - float(perimeter_data['x']['right'])
+        intervalo_parcial = float(response) - float(perimeter_data['x']['right'])
 
-    intervalo_total = float(perimeter_data['x']['left']) - float(perimeter_data['x']['right'])
-    intervalo_parcial = float(response) - float(perimeter_data['x']['right'])
+        resultado = (-100) + ((intervalo_parcial * 200)/intervalo_total)
 
-    resultado = (-100) + ((intervalo_parcial * 200)/intervalo_total)
+        return {'x': resultado}
+    except:
+        return {'x': 'Atualize primeiro o perimetro antes de mandar a requisição!'}
 
-    return {'x': resultado}
 
 @app.get('/coord/latlong/100')
 def lat_long_100_get() -> dict:
@@ -240,20 +286,21 @@ def lat_long_100_get() -> dict:
     request = requests.get(f'http://{url}:1026/v2/entities/urn:ngsi-ld:Gps:001/attrs/coord', headers={'fiware-service': 'smart', 'fiware-servicepath': '/', 'accept': 'application/json'})
     response = request.json()['value'].split(' ')
 
-    if perimeter_data['y']['up'] == None or perimeter_data['y']['down'] == None or perimeter_data['x']['left'] == None or perimeter_data['x']['right'] == None:
-        return {'y': 'Atualize primeiro o perimeter antes de mandar', 'x': 'Atualize primeiro o perimeter antes de mandar'}
+    try:
+        intervalo_totaly = float(perimeter_data['y']['up']) - float(perimeter_data['y']['down'])
+        intervalo_parcialy = float(response[0]) - float(perimeter_data['y']['down'])
 
-    intervalo_totaly = float(perimeter_data['y']['up']) - float(perimeter_data['y']['down'])
-    intervalo_parcialy = float(response[0]) - float(perimeter_data['y']['down'])
+        resultadoy = (-100) + ((intervalo_parcialy * 200)/intervalo_totaly)
 
-    resultadoy = (-100) + ((intervalo_parcialy * 200)/intervalo_totaly)
+        intervalo_totalx = float(perimeter_data['x']['left']) - float(perimeter_data['x']['right'])
+        intervalo_parcialx = float(response[1]) - float(perimeter_data['x']['right'])
 
-    intervalo_totalx = float(perimeter_data['x']['left']) - float(perimeter_data['x']['right'])
-    intervalo_parcialx = float(response[1]) - float(perimeter_data['x']['right'])
+        resultadox = (-100) + ((intervalo_parcialx * 200)/intervalo_totalx)
 
-    resultadox = (-100) + ((intervalo_parcialx * 200)/intervalo_totalx)
+        return {'y': resultadoy, 'x': resultadox}
+    except TypeError:
+        return {'y': 'Atualize primeiro o perimetro antes de mandar a requisição!', 'x': 'Atualize primeiro o perimetro antes de mandar a requisição!'}
 
-    return {'y': resultadoy, 'x': resultadox}
 
 @app.get('/coord/latlong/100/historic')
 def lat_long_100_historic() -> dict:
