@@ -1,10 +1,15 @@
+from typing import Any
 from fastapi import FastAPI
 import requests
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import database_repository
+from models import *
 
 # Cria a aplicação FastAPI.
 # O título e a versão são importantes para a documentação automática da API.
+
+database_repository.verify_database()
 app = FastAPI(title='API de Coordenadas', version='1.0')
 
 # Define as origens permitidas (domínios) que podem fazer requisições à sua API.
@@ -36,16 +41,6 @@ url = '20.81.234.239'
 # Dicionário global para armazenar os limites do perímetro.
 # Este perímetro é definido pelo usuário via um endpoint POST.
 # Os valores 'up', 'down', 'left' e 'right' são os limites de latitude e longitude.
-perimeter_data = {
-    'y': {
-        'up': None,
-        'down': None
-    },
-    'x': {
-        'left': None,
-        'right': None
-    }
-}
 
 def hemisferios(coord: list[str, str]) -> dict:
     """
@@ -137,24 +132,18 @@ def lat_long_historic() -> dict:
 
     return {'historico': hist}
 
-class Perimeter(BaseModel):
-    """
-    Define o formato do perímetro para o endpoint POST.
+perimeter_data = None
 
-    Garante que a requisição POST tenha as chaves 'y' e 'x', e que cada uma
-    contenha 'up', 'down', 'left' e 'right' com valores do tipo string.
-    """
-    y: dict = {
-        'up': str,
-        'down': str
-    }
-    x: dict = {
-        'left': str,
-        'right': str
-    }
+@app.get('/coord/database')
+def get_database_perimeter() -> list:
+    return database_repository.read_matchcoord_database()
+
+@app.get('/coord/define')
+def show_perimeter() -> dict | None:
+    return perimeter_data
 
 @app.post('/coord/define')
-def lockin_perimeter(perimeter: Perimeter) -> dict:
+def lockin_perimeter(obj: ChoosePerimeterDTO) -> dict:
     """
     Define e armazena os limites do perímetro.
 
@@ -163,8 +152,38 @@ def lockin_perimeter(perimeter: Perimeter) -> dict:
     esses valores na variável global `perimeter_data` para uso em endpoints futuros.
     """
     global perimeter_data
-    perimeter_data = perimeter.__dict__
-    return {'status': 'Atualizado!', 'perimetro_data': perimeter_data}
+    data = database_repository.read_matchcoord_database()
+    for i in data:
+        if i["id"] == obj.id:
+            perimeter_data = i
+            break
+    if perimeter_data == None:
+        return {'status': 'Não encontrado', 'perimetro_data': perimeter_data}
+    else:
+        return {'status': 'Atualizado!', 'perimetro_data': perimeter_data}
+
+@app.post('/coord/database')
+def create_new_match_perimeter(obj: CreatePerimeterDTO) -> int:
+    name = obj.name
+    xleft = obj.x.left
+    xright = obj.x.right
+    yup = obj.y.up
+    ydown = obj.y.down
+    return database_repository.create_matchcoord_database(name, xleft, xright, yup, ydown)
+
+@app.put('/coord/database')
+def update_new_match_perimeter(obj: UpdatePerimeterDTO) -> int:
+    id = obj.id
+    name = obj.name
+    xleft = obj.x.left if not obj.x == None else None 
+    xright = obj.x.right if not obj.x == None else None 
+    yup = obj.y.up if not obj.y == None else None 
+    ydown = obj.y.down if not obj.y == None else None
+    return database_repository.update_matchcoord_database(id, name, xleft, xright, yup, ydown)
+
+@app.delete('/coord/database')
+def delete_match_perimeter(obj: ChoosePerimeterDTO) -> int:
+    return database_repository.delete_matchcoord_database(obj.id)
 
 @app.get('/coord/lat/100')
 def lat_100_get() -> dict:
