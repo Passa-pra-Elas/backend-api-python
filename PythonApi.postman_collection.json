@@ -8,130 +8,516 @@
 	},
 	"item": [
 		{
-			"name": "hemisferios",
-			"event": [
+			"name": "perimeter_data",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}:8000/coord/hemisferios",
-					"host": [
-						"{{url}}"
-					],
-					"port": "8000",
-					"path": [
-						"coord",
-						"hemisferios"
-					]
+					"name": "define_perimeter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"924a2d66-5259-4bd9-9098-f54c88d62037\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/define",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"define"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
-			},
-			"response": []
-		},
-		{
-			"name": "latitude",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "get_actual_perimeter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:8000/coord/define",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"define"
+							]
 						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}:8000/coord/lat",
-					"host": [
-						"{{url}}"
-					],
-					"port": "8000",
-					"path": [
-						"coord",
-						"lat"
-					]
-				},
-				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-			},
-			"response": []
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "historic",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}:8000/coord/latlong/historic",
-					"host": [
-						"{{url}}"
-					],
-					"port": "8000",
-					"path": [
-						"coord",
-						"latlong",
-						"historic"
-					]
+			"name": "perimeter_database",
+			"item": [
+				{
+					"name": "get_database_perimeter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:8000/coord/database",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"database"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_database_perimeter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"aoba\",\r\n    \"x\": {\r\n        \"left\": 1,\r\n        \"right\": 2\r\n    },\r\n    \"y\": {\r\n        \"up\": 3,\r\n        \"down\": 4\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/database",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"database"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_database_perimeter",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"a48aa3cf-5d5c-443f-895a-904bfd614131\",\r\n    \"name\": \"atasasdasdasdasdm\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/database",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"database"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_database_perimeter",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"4cf87cc6-6ea6-4a7c-8781-68fc921a2d64\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/database",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"database"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "define_perimeter",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"y\": {\n        \"up\": \"-25\",\n        \"down\": \"-19\"\n    },\n    \"x\": {\n        \"left\": \"-70\",\n        \"right\": \"-46\"\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "scale_100",
+			"item": [
+				{
+					"name": "latitude100",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}:8000/coord/define",
-					"host": [
-						"{{url}}"
 					],
-					"port": "8000",
-					"path": [
-						"coord",
-						"define"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/lat/100",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"lat",
+								"100"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "lat+long100",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/latlong/100",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"latlong",
+								"100"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "longitude100",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/long/100",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"long",
+								"100"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "historic100",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:8000/coord/latlong/100/historic",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"latlong",
+								"100",
+								"historic"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "position_coords",
+			"item": [
+				{
+					"name": "hemisferios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:8000/coord/hemisferios",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"hemisferios"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "latitude",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/lat",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"lat"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "longitude",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/long",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"long"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "lat+long",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:8000/coord/latlong",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"latlong"
+							]
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "historic",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:8000/coord/latlong/historic",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"coord",
+								"latlong",
+								"historic"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
